@@ -1,0 +1,21 @@
+{
+  "name": "English Bible Version Changer",
+  "description": "A tool that automatically changes the Bible version based on the most appropriate version in English.",
+  "version": "0.0.0",
+  "manifest_version": 3,
+  "icons": {
+    "16": "icon.png",
+    "32": "icon.png",
+    "48": "icon.png",
+    "128": "icon.png"
+  },
+  "action": {
+    "default_title": "English Bible Version Changer"
+  },
+  "content_scripts": [
+    {
+      "matches": ["*://bible.mcgi.app/*"],
+      "js": ["contentScript.js"]
+    }
+  ]
+}
