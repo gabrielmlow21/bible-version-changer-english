@@ -3,6 +3,7 @@ const SHEET_GID = "138291040";
 
 const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&gid=${SHEET_GID}`;
 let spreadsheetVerses = {};
+let currentVerse = "";
 
 fetch(url)
   .then((response) => response.text())
@@ -23,12 +24,30 @@ fetch(url)
   })
   .catch((error) => console.error("Error:", error));
 
-window.setInterval(function () {
-  const currentVerse = document.getElementById("title").innerText;
-  if (currentVerse in spreadsheetVerses) {
-    document.getElementById("version").textContent =
-      spreadsheetVerses[currentVerse][0];
-    document.getElementById("verse").textContent =
-      spreadsheetVerses[currentVerse][1];
+async function copyToClipboard(text) {
+  await navigator.clipboard.writeText(text);
+}
+
+const copyToClipboardHandler = (event) => {
+  if (currentVerse)
+    copyToClipboard(
+      `\n${currentVerse}\n${spreadsheetVerses[currentVerse][0]}\n${spreadsheetVerses[currentVerse][1]}`
+    );
+};
+
+const intervalId = window.setInterval(() => {
+  if (document.getElementById("title")) {
+    currentVerse = document.getElementById("title").innerText;
+    if (currentVerse in spreadsheetVerses) {
+      document.getElementById("version").textContent =
+        spreadsheetVerses[currentVerse][0];
+      document.getElementById("verse").textContent =
+        spreadsheetVerses[currentVerse][1];
+      document.addEventListener("copy", copyToClipboardHandler);
+    } else {
+      if (copyToClipboardHandler) {
+        document.removeEventListener("copy", copyToClipboardHandler);
+      }
+    }
   }
 }, 1000);
